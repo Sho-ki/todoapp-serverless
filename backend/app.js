@@ -22,7 +22,7 @@ app.use(cors());
 
 const viewsDirectoryPath = path.join(__dirname, "/views");
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8888;
 
 // Get api of all todo
 app.get("/list-todos", async (req, res) => {
@@ -74,6 +74,7 @@ app.post("/add-todos", async (req, res) => {
     await supabase
       .from("todo_app")
       .insert([{ todo, index_number: maxIndexNumber + 1024 }]);
+
     res.redirect("/");
   } catch (e) {
     res.status(500).send({ e });
@@ -125,7 +126,6 @@ app.post("/order-todos/:id", async (req, res) => {
 
 // Edit todo
 app.post("/edit-todos/:id", async (req, res) => {
-  console.log(req.body);
   const id = req.params.id;
   const todo = req.body.newValue;
 
@@ -149,9 +149,7 @@ app.post("/delete-todos/:id", async (req, res) => {
   }
 });
 
-// Display the screen
-// app.get("/", (req, res) => {
-//   res.sendFile(viewsDirectoryPath + "/index.html");
-// });
-
+app.get("/", (req, res) => {
+  res.redirect("http://localhost:3000/");
+});
 app.listen(port);
