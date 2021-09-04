@@ -8,6 +8,7 @@ const supabasejs = require("@supabase/supabase-js");
 const cors = require("cors");
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -19,8 +20,6 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cors());
-
-const viewsDirectoryPath = path.join(__dirname, "/views");
 
 const port = process.env.PORT || 8888;
 

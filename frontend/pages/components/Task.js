@@ -1,5 +1,5 @@
 import { useState } from "react";
-function Task({ task, id }) {
+function Task({ task, id, getDeleteId }) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentInput, setCurrentInput] = useState(task);
 
@@ -22,6 +22,18 @@ function Task({ task, id }) {
   const editTaskHandler = (event) => {
     setCurrentInput(event.target.value);
   };
+
+  const onClickDeleteIcon = async (id) => {
+    const url = `http://localhost:8888/delete-todos/${id}`;
+
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+    getDeleteId(id);
+  };
   return (
     <>
       <i className="icon fa fa-bars icon"></i>
@@ -40,6 +52,10 @@ function Task({ task, id }) {
         />
       )}
       {isEditing && <input type="button" value="OK" onClick={endEditMode} />}
+      <i
+        className="trash fa fa-trash"
+        onClick={() => onClickDeleteIcon(id)}
+      ></i>
     </>
   );
 }

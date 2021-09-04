@@ -20,7 +20,7 @@ export default function Home() {
       });
   }, []);
 
-  const addTaskHandler = async (newTodo) => {
+  const addTaskHandler = async () => {
     await fetch("http://localhost:8888/list-todos")
       .then(async (res) => {
         return await res.json();

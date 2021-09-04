@@ -18,7 +18,7 @@ const Submit = ({ setAddTask }) => {
       }),
     });
 
-    setAddTask(task);
+    setAddTask();
     setCurrentInput("");
   };
   return (
