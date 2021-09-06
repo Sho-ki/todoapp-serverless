@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import TodoContext from "../../store/todo-context";
-function Task({ task, id, getDeleteId }) {
+
+function Task({ task, id }) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentInput, setCurrentInput] = useState(task);
 
