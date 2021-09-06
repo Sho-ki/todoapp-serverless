@@ -1,11 +1,11 @@
 import Task from "./Task";
 
-function Wrapper({ todoData, deleteTask }) {
+function Wrapper({ todoData }) {
   return (
     <>
       {todoData.map((todo) => (
         <div className="wrapper" id="wrapper" key={todo.id}>
-          <Task task={todo.todo} id={todo.id} getDeleteId={deleteTask}></Task>
+          <Task task={todo.todo} id={todo.id}></Task>
         </div>
       ))}
     </>
@@ -13,3 +13,19 @@ function Wrapper({ todoData, deleteTask }) {
 }
 
 export default Wrapper;
+
+// import Task from "./Task";
+
+// function Wrapper({ todoData, deleteTask }) {
+//   return (
+//     <>
+//       {todoData.map((todo) => (
+//         <div className="wrapper" id="wrapper" key={todo.id}>
+//           <Task task={todo.todo} id={todo.id} getDeleteId={deleteTask}></Task>
+//         </div>
+//       ))}
+//     </>
+//   );
+// }
+
+// export default Wrapper;
