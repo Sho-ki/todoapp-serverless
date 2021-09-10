@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import useAddTask from "../hook/useAddTask";
 import useTask from "../hook/useTask";
 import TodoContext from "../store/todo-context";
+import { SortableHandle } from "react-sortable-hoc";
 
 function Task({ task, id }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -22,7 +23,7 @@ function Task({ task, id }) {
       return;
     }
 
-    await fetch("https://stark-cove-65239.herokuapp.com/edit-todos/" + id, {
+    await fetch("/api/edit-todos/" + id, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -43,13 +44,23 @@ function Task({ task, id }) {
     setCurrentInput(e.target.value);
   };
 
+  const check = (e) => {
+    console.log(e.target);
+  };
+
+  const DragHandle = SortableHandle(() => <i className="icon fa fa-bars"></i>);
+
   return (
-    <>
-      <i className="icon fa fa-bars icon"></i>
+    <div className="item" id={id} onDrop={check}>
+      <DragHandle />
       {!isEditing && (
         <>
-          <span>{currentInput}</span>{" "}
+          <span className="txt">{currentInput}</span>
           <i className="edit fa fa-edit" onClick={startEditMode}></i>
+          <i
+            className="trash fa fa-trash"
+            onClick={() => ctx.deleteTaskHandler(id)}
+          ></i>
         </>
       )}
 
@@ -75,12 +86,7 @@ function Task({ task, id }) {
           </button>
         </>
       )}
-
-      <i
-        className="trash fa fa-trash"
-        onClick={() => ctx.deleteTaskHandler(id)}
-      ></i>
-    </>
+    </div>
   );
 }
 
