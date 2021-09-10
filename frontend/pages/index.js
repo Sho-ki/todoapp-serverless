@@ -1,24 +1,27 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
-import Container from "./components/Container";
+import Container from "../components/Container";
 import styles from "../styles/Home.module.css";
-import Wrapper from "./components/Wrapper";
-import Submit from "./components/Submit";
+import Wrapper from "../components/Wrapper";
+import Submit from "../components/Submit";
 import TodoContext from "../store/todo-context";
+import useTask from "../hook/useTask";
 
 export default function Home() {
   const [enteredTodo, setEnteredTodo] = useState();
 
-  useEffect(async () => {
-    await fetch("http://localhost:8888/list-todos")
-      .then(async (res) => {
-        return await res.json();
-      })
-      .then((datas) => {
-        console.log(datas.data);
-        setEnteredTodo(datas.data);
-      });
+  useEffect(() => {
+    const getTasks = async () =>
+      await fetch("http://localhost:8888/list-todos")
+        .then(async (res) => {
+          return await res.json();
+        })
+        .then((datas) => {
+          console.log(datas.data);
+          setEnteredTodo(datas.data);
+        });
+    getTasks();
   }, []);
 
   const addTaskHandler = async (task) => {
@@ -70,8 +73,10 @@ export default function Home() {
         </Head>
         <Container className="container">
           <Submit />
+
           <div className="task-list">
             {enteredTodo && <Wrapper todoData={enteredTodo}></Wrapper>}
+            {/* {enteredTodo && <Wrapper todoData={enteredTodo}></Wrapper>} */}
           </div>
         </Container>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>

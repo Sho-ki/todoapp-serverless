@@ -74,7 +74,7 @@ app.post("/add-todos", async (req, res) => {
       .from("todo_app")
       .insert([{ todo, index_number: maxIndexNumber + 1024 }]);
 
-    res.redirect("/");
+    res.send("/");
   } catch (e) {
     res.status(500).send({ e });
   }
@@ -130,7 +130,7 @@ app.post("/edit-todos/:id", async (req, res) => {
 
   try {
     await supabase.from("todo_app").update({ todo }).match({ id });
-    res.redirect("/");
+    res.send("/");
   } catch (e) {
     res.status(500).send({ e });
   }
@@ -142,13 +142,14 @@ app.post("/delete-todos/:id", async (req, res) => {
 
   try {
     await supabase.from("todo_app").delete().match({ id });
-    res.redirect("/");
+
+    res.send("/");
   } catch (e) {
     res.status(500).send({ e });
   }
 });
 
 app.get("/", (req, res) => {
-  res.redirect("http://localhost:3000/");
+  res.send("http://localhost:3000/");
 });
 app.listen(port);

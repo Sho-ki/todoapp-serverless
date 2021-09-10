@@ -70,12 +70,29 @@ input[name=todo]{
 }
 
 .submitBtn{
-  width: auto;
+  width: 20%;
   height: 2.5rem;
   flex:1;
   background-color: purple;
   color: white;
+  border: ridge rgb(138, 138, 138) 2px;
 }
 
+.submitBtn:disabled{
+  background-color: silver;
+}
 
+.formArea{
+  display: flex;
+  margin-bottom: 10px;
+}
 
+/* .invalid{
+  background-color: rgb(255, 82, 163);
+  outline: crimson;
+}
+
+.invalidMsg{
+  color: red;
+  margin-bottom: 10px;
+} */
