@@ -22,7 +22,7 @@ function Task({ task, id }) {
       return;
     }
 
-    await fetch("http://localhost:8888/edit-todos/" + id, {
+    await fetch("/api/edit-todos/" + id, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -44,12 +44,16 @@ function Task({ task, id }) {
   };
 
   return (
-    <>
-      <i className="icon fa fa-bars icon"></i>
+    <div className="item">
+      <i className="icon fa fa-bars"></i>
       {!isEditing && (
         <>
-          <span>{currentInput}</span>{" "}
+          <span className="txt">{currentInput}</span>
           <i className="edit fa fa-edit" onClick={startEditMode}></i>
+          <i
+            className="trash fa fa-trash"
+            onClick={() => ctx.deleteTaskHandler(id)}
+          ></i>
         </>
       )}
 
@@ -75,12 +79,7 @@ function Task({ task, id }) {
           </button>
         </>
       )}
-
-      <i
-        className="trash fa fa-trash"
-        onClick={() => ctx.deleteTaskHandler(id)}
-      ></i>
-    </>
+    </div>
   );
 }
 

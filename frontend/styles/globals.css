@@ -23,7 +23,7 @@ body {
 }
 
 .wrapper .item {
-  display: block;
+  
   background: #5e0094;
   margin: 5px 0;
   padding: 10px 15px;
@@ -43,6 +43,7 @@ body {
   font-weight: 400;
   font-size: 1rem;
   cursor: pointer;
+  margin-right:10px
 }
 
 .item button {
@@ -51,9 +52,16 @@ body {
 }
 
 .trash{
-  
+  color: white;
   cursor: pointer;
-  margin: auto 20px auto auto;
+  margin-block-end: auto;
+  margin-left: 10px;
+}
+
+.edit{
+  color: white;
+  cursor: pointer;
+  margin-left: auto
 }
 
 .container form{

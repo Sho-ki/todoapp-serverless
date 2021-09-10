@@ -4,11 +4,11 @@ import useTask from "../hook/useTask";
 function Wrapper(todoData) {
   return (
     <>
-      {todoData.todoData.map((todo) => (
-        <div className="wrapper" id="wrapper" key={todo.id}>
-          <Task task={todo.todo} id={todo.id}></Task>
-        </div>
-      ))}
+      <div className="wrapper" id="wrapper">
+        {todoData.todoData.map((todo) => (
+          <Task task={todo.todo} id={todo.id} key={todo.id}></Task>
+        ))}
+      </div>
     </>
   );
 }

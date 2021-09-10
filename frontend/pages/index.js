@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     const getTasks = async () =>
-      await fetch("http://localhost:8888/list-todos")
+      await fetch("/api/list-todos")
         .then(async (res) => {
           return await res.json();
         })
@@ -25,7 +25,7 @@ export default function Home() {
   }, []);
 
   const addTaskHandler = async (task) => {
-    await fetch("http://localhost:8888/add-todos", {
+    await fetch("/api/add-todos", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -36,7 +36,7 @@ export default function Home() {
       }),
     });
 
-    await fetch("http://localhost:8888/list-todos")
+    await fetch("/api/list-todos")
       .then(async (res) => {
         return await res.json();
       })
@@ -46,7 +46,7 @@ export default function Home() {
   };
 
   const deleteTaskHandler = async (id) => {
-    const url = `http://localhost:8888/delete-todos/${id}`;
+    const url = `/api/delete-todos/${id}`;
 
     await fetch(url, {
       headers: {
@@ -97,7 +97,7 @@ export default function Home() {
 //   const [enteredTodo, setEnteredTodo] = useState();
 
 //   useEffect(async () => {
-//     await fetch("http://localhost:8888/list-todos")
+//     await fetch("/api/list-todos")
 //       .then(async (res) => {
 //         return await res.json();
 //       })
@@ -108,7 +108,7 @@ export default function Home() {
 //   }, []);
 
 //   const addTaskHandler = async () => {
-//     await fetch("http://localhost:8888/list-todos")
+//     await fetch("/api/list-todos")
 //       .then(async (res) => {
 //         return await res.json();
 //       })
