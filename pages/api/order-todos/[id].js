@@ -3,7 +3,6 @@ const app = express();
 const bodyParser = require("body-parser");
 require("dotenv").config();
 const supabasejs = require("@supabase/supabase-js");
-const cors = require("cors");
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
@@ -16,11 +15,9 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-app.use(cors());
 
 export default async function orderTodos(req, res) {
   const id = req.query.id;
-  console.log(id);
   let prevElIndexNumber = req.body.prevElIndexNumber;
   let nextElIndexNumber = req.body.nextElIndexNumber;
   let currElIndexNumber;

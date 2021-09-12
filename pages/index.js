@@ -1,66 +1,30 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
 
 import Container from "../components/Container";
 import styles from "../styles/Home.module.css";
 import Wrapper from "../components/Wrapper";
 import Submit from "../components/Submit";
 import TodoContext from "../store/todo-context";
-import useTask from "../hook/useTask";
+import useTask from "../hooks/useTask";
 
 export default function Home() {
-  const [enteredTodo, setEnteredTodo] = useState();
-
-  useEffect(() => {
-    const getTasks = async () =>
-      await fetch("/api/list-todos")
-        .then(async (res) => {
-          return await res.json();
-        })
-        .then((datas) => {
-          console.log(datas.data);
-          setEnteredTodo(datas.data);
-        });
-    getTasks();
-  }, []);
-
-  const addTaskHandler = async (task) => {
-    await fetch("/api/add-todos", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({
-        todo: task,
-      }),
-    });
-
-    await fetch("/api/list-todos")
-      .then(async (res) => {
-        return await res.json();
-      })
-      .then((datas) => {
-        setEnteredTodo(datas.data);
-      });
-  };
-
-  const deleteTaskHandler = async (id) => {
-    const url = `/api/delete-todos/${id}`;
-
-    await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    const arrayAfterDelete = enteredTodo.filter((todo) => todo.id !== id);
-    setEnteredTodo(arrayAfterDelete);
-  };
+  const [
+    tasks,
+    addTaskHandler,
+    editTaskHandler,
+    deleteTaskHandler,
+    handleDragEnd,
+  ] = useTask();
 
   return (
-    <TodoContext.Provider value={{ addTaskHandler, deleteTaskHandler }}>
+    <TodoContext.Provider
+      value={{
+        addTaskHandler,
+        editTaskHandler,
+        deleteTaskHandler,
+        handleDragEnd,
+      }}
+    >
       <div className={styles.container}>
         <Head>
           <title>Create Next App</title>
@@ -75,12 +39,7 @@ export default function Home() {
           <Submit />
 
           <div className="task-list">
-            {enteredTodo && (
-              <Wrapper
-                enteredTodo={enteredTodo}
-                setEnteredTodo={setEnteredTodo}
-              ></Wrapper>
-            )}
+            {tasks && <Wrapper tasks={tasks}></Wrapper>}
           </div>
         </Container>
       </div>

@@ -1,65 +1,50 @@
-import { useState, useContext } from "react";
-import useAddTask from "../hook/useAddTask";
-import useTask from "../hook/useTask";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useContext } from "react";
+
 import TodoContext from "../store/todo-context";
-import { SortableHandle } from "react-sortable-hoc";
+import useInput from "../hooks/useEditInput";
 
 function Task({ task, id }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentInput, setCurrentInput] = useState(task);
-  const [isValid, setIsValid] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
   const ctx = useContext(TodoContext);
 
-  const startEditMode = () => {
-    setIsEditing(true);
-  };
+  const [
+    currentInput,
+    startEditMode,
+    endEditMode,
+    onEditChange,
+    isEditing,
+    isValid,
+    isLoading,
+  ] = useInput(task, id);
 
-  const endEditMode = async () => {
-    if (currentInput.trim().length === 0) {
-      setIsValid(false);
-
-      return;
-    }
-
-    await fetch("/api/edit-todos/" + id, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ newValue: currentInput }),
+  const { setNodeRef, attributes, listeners, transition, transform } =
+    useSortable({
+      id,
     });
-    setIsEditing(false);
-    setIsValid(true);
-    setIsLoading(false);
-  };
-  const editTaskHandler = (e) => {
-    if (e.target.value.trim().length > 0) {
-      setIsValid(true);
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
-    }
-    setCurrentInput(e.target.value);
-  };
 
-  const check = (e) => {
-    console.log(e.target);
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
   };
-
-  const DragHandle = SortableHandle(() => <i className="icon fa fa-bars"></i>);
 
   return (
-    <div className="item" id={id} onDrop={check}>
-      <DragHandle />
+    <div className="item" id={id} style={style}>
+      <i
+        className="icon fa fa-bars"
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+      ></i>
       {!isEditing && (
         <>
           <span className="txt">{currentInput}</span>
           <i className="edit fa fa-edit" onClick={startEditMode}></i>
           <i
             className="trash fa fa-trash"
-            onClick={() => ctx.deleteTaskHandler(id)}
+            onClick={() => {
+              ctx.deleteTaskHandler(id);
+            }}
           ></i>
         </>
       )}
@@ -71,7 +56,7 @@ function Task({ task, id }) {
             value={currentInput}
             className={`${!isValid && "invalid"}`}
             onChange={(e) => {
-              editTaskHandler(e);
+              onEditChange(e);
             }}
           />
           <button
@@ -79,7 +64,6 @@ function Task({ task, id }) {
             disabled={isLoading}
             onClick={() => {
               endEditMode();
-              setIsLoading(true);
             }}
           >
             OK

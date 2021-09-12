@@ -1,34 +1,40 @@
 import Task from "./Task";
-import useTask from "../hook/useTask";
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { arrayMoveImmutable } from "array-move";
-import { useState } from "react";
 
-function Wrapper({ enteredTodo, setEnteredTodo }) {
-  const SortableItem = SortableElement(({ todo, id }) => (
-    <Task task={todo} id={id}></Task>
-  ));
+import { useContext } from "react";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
-  const SortableListContainer = SortableContainer(({ enteredTodo }) => (
-    <div>
-      {enteredTodo.map((todo, i) => (
-        <SortableItem key={todo.id} index={i} todo={todo.todo} id={todo.id} />
-      ))}
-    </div>
-  ));
+import TodoContext from "../store/todo-context";
 
-  const onSortEnd = ({ oldIndex, newIndex }, e) => {
-    setEnteredTodo((enteredTodo) =>
-      arrayMoveImmutable(enteredTodo, oldIndex, newIndex)
-    );
-  };
+function Wrapper({ tasks }) {
+  const sensors = [useSensor(PointerSensor)];
+
+  const ctx = useContext(TodoContext);
+
   return (
     <div className="wrapper" id="wrapper">
-      <SortableListContainer
-        onSortEnd={onSortEnd}
-        enteredTodo={enteredTodo}
-        useDragHandle={true}
-      />
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={ctx.handleDragEnd}
+      >
+        <SortableContext
+          items={tasks.map((task) => task)}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.map((task) => (
+            <Task key={task.id} task={task.todo} id={task.id} />
+          ))}
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
