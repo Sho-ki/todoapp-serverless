@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useEffectOnce } from "react-use";
 import axios from "axios";
 import { arrayMove } from "@dnd-kit/sortable";
 
-function useTask() {
+function useTask(editTask, editId) {
   const [tasks, setTasks] = useState();
+
+  const [currentInput, setCurrentInput] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffectOnce(() => {
     axios
       .get("/api/list-todos")
       .then((res) => {
         setTasks(res.data.data);
+        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e);
@@ -76,6 +81,7 @@ function useTask() {
         .get("/api/read-todos/" + prevId)
         .then((data) => {
           prevElIndexNumber = data.data.data[0].index_number;
+          return;
         })
         .catch((e) => {
           console.log(e);
@@ -87,6 +93,7 @@ function useTask() {
         .get("/api/read-todos/" + nextId)
         .then((data) => {
           nextElIndexNumber = data.data.data[0].index_number;
+          return;
         })
         .catch((e) => {
           console.log(e);
@@ -105,13 +112,72 @@ function useTask() {
     orderChange();
   }
 
-  return [
+  const inputValueHandler = (e) => {
+    if (e.target.value.trim().length > 0) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+    setCurrentInput(e.target.value);
+  };
+
+  const submit = () => {
+    addTaskHandler(currentInput);
+    setIsLoading(false);
+    setCurrentInput("");
+    setIsValid(false);
+  };
+  //
+  const [isEditing, setIsEditing] = useState(false);
+  const [editCurrentInput, setEditCurrentInput] = useState(editTask);
+  const [isEditValid, setIsEditValid] = useState(true);
+  const [isEditLoading, setIsEditLoading] = useState(false);
+
+  const startEditMode = () => {
+    setIsEditing(true);
+  };
+
+  const endEditMode = () => {
+    if (editCurrentInput.trim().length === 0) {
+      setIsEditValid(false);
+      return;
+    }
+    editTaskHandler(editId, editCurrentInput);
+    setIsEditing(false);
+    setIsEditValid(true);
+    setIsEditLoading(false);
+  };
+
+  const onEditChange = (e) => {
+    if (e.target.value.trim().length > 0) {
+      setIsEditValid(true);
+      setIsEditLoading(false);
+    } else {
+      setIsEditLoading(true);
+    }
+    setEditCurrentInput(e.target.value);
+  };
+
+  return {
     tasks,
     addTaskHandler,
     editTaskHandler,
     deleteTaskHandler,
     handleDragEnd,
-  ];
+    currentInput,
+    inputValueHandler,
+    isValid,
+    isLoading,
+    submit,
+    //
+    editCurrentInput,
+    startEditMode,
+    endEditMode,
+    onEditChange,
+    isEditing,
+    isEditValid,
+    isEditLoading,
+  };
 }
 
 export default useTask;

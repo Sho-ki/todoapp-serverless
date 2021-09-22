@@ -1,32 +1,35 @@
-import useAddInput from "../hooks/useAddInput";
+// import useAddInput from "../hooks/useAddInput";
+import { useState, useContext } from "react";
+import TodoContext from "../store/todo-context";
 
 const Submit = () => {
-  const [currentInput, inputValueHandler, isValid, isLoading, submit] =
-    useAddInput();
+  const ctx = useContext(TodoContext);
 
   return (
     <>
-      <div className="formArea">
-        <input
-          type="text"
-          name="todo"
-          onChange={inputValueHandler}
-          value={currentInput}
-          className={`${!isValid && "invalid"}`}
-        />
+      {!ctx.isLoading && (
+        <div className="formArea">
+          <input
+            type="text"
+            name="todo"
+            onChange={ctx.inputValueHandler}
+            value={ctx.currentInput}
+            className={`${!ctx.isValid && "invalid"}`}
+          />
 
-        <button
-          type="submit"
-          id="submit"
-          className="submitBtn"
-          disabled={isLoading || !isValid}
-          onClick={() => {
-            submit();
-          }}
-        >
-          SUBMIT
-        </button>
-      </div>
+          <button
+            type="submit"
+            id="submit"
+            className="submitBtn"
+            disabled={ctx.isLoading || !ctx.isValid}
+            onClick={() => {
+              ctx.submit();
+            }}
+          >
+            SUBMIT
+          </button>
+        </div>
+      )}
     </>
   );
 };

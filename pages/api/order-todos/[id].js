@@ -52,7 +52,7 @@ export default async function orderTodos(req, res) {
         })
       );
     }
-    res.end();
+    res.send("/");
   } catch (e) {
     res.status(500).send({ e });
   }

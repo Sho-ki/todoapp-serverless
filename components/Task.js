@@ -3,20 +3,20 @@ import { CSS } from "@dnd-kit/utilities";
 import { useContext } from "react";
 
 import TodoContext from "../store/todo-context";
-import useInput from "../hooks/useEditInput";
+import useTask from "../hooks/useTask";
 
 function Task({ task, id }) {
   const ctx = useContext(TodoContext);
 
-  const [
-    currentInput,
+  const {
+    editCurrentInput,
     startEditMode,
     endEditMode,
     onEditChange,
     isEditing,
-    isValid,
-    isLoading,
-  ] = useInput(task, id);
+    isEditValid,
+    isEditLoading,
+  } = useTask(task, id);
 
   const { setNodeRef, attributes, listeners, transition, transform } =
     useSortable({
@@ -38,7 +38,7 @@ function Task({ task, id }) {
       ></i>
       {!isEditing && (
         <>
-          <span className="txt">{currentInput}</span>
+          <span className="txt">{editCurrentInput}</span>
           <i className="edit fa fa-edit" onClick={startEditMode}></i>
           <i
             className="trash fa fa-trash"
@@ -48,20 +48,19 @@ function Task({ task, id }) {
           ></i>
         </>
       )}
-
       {isEditing && (
         <>
           <input
             type="text"
-            value={currentInput}
-            className={`${!isValid && "invalid"}`}
+            value={editCurrentInput}
+            className={`${!isEditValid && "invalid"}`}
             onChange={(e) => {
               onEditChange(e);
             }}
           />
           <button
             value="OK"
-            disabled={isLoading}
+            disabled={isEditLoading}
             onClick={() => {
               endEditMode();
             }}
