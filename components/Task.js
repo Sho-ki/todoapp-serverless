@@ -17,7 +17,6 @@ function Task({ task, id, idxNum }) {
     isEditValid,
     isEditLoading,
   } = useTask(task, id);
-  // console.log(idxNumDisplayMode);
 
   const { setNodeRef, attributes, listeners, transition, transform } =
     useSortable({
