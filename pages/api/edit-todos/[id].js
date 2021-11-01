@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const supabasejs = require("@supabase/supabase-js");
-const cors = require("cors");
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const supabasejs = require('@supabase/supabase-js');
+const cors = require('cors');
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
@@ -23,8 +23,13 @@ export default async function editTodos(req, res) {
   const todo = req.body.newValue;
 
   try {
-    await supabase.from("todo_app").update({ todo }).match({ id });
-    res.send("/");
+    const { error } = await supabase
+      .from('todo_app')
+      .update({ todo })
+      .match({ id });
+
+    if (error) throw Error(error.message);
+    res.status(200).send({ message: 'OK' });
   } catch (e) {
     res.status(500).send({ e });
   }

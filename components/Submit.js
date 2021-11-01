@@ -1,6 +1,5 @@
-// import useAddInput from "../hooks/useAddInput";
-import { useState, useContext } from "react";
-import TodoContext from "../store/todo-context";
+import { useState, useContext } from 'react';
+import TodoContext from '../store/todo-context';
 
 const Submit = () => {
   const ctx = useContext(TodoContext);
@@ -8,19 +7,19 @@ const Submit = () => {
   return (
     <>
       {!ctx.isLoading && (
-        <div className="formArea">
+        <div className='formArea'>
           <input
-            type="text"
-            name="todo"
+            type='text'
+            name='todo'
             onChange={ctx.inputValueHandler}
             value={ctx.currentInput}
-            className={`${!ctx.isValid && "invalid"}`}
+            className={`${!ctx.isValid && 'invalid'}`}
           />
 
           <button
-            type="submit"
-            id="submit"
-            className="submitBtn"
+            type='submit'
+            id='submit'
+            className='submitBtn'
             disabled={ctx.isLoading || !ctx.isValid}
             onClick={() => {
               ctx.submit();

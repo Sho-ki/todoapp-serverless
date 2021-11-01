@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const supabasejs = require("@supabase/supabase-js");
-const cors = require("cors");
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const supabasejs = require('@supabase/supabase-js');
+const cors = require('cors');
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
@@ -21,13 +21,14 @@ app.use(cors());
 export default async function readTodos(req, res) {
   const id = req.query.id;
   try {
-    const results = await supabase
-      .from("todo_app")
-      .select("*")
-      .order("index_number")
+    const { data, error } = await supabase
+      .from('todo_app')
+      .select('*')
+      .order('index_number')
       .match({ id });
-    const data = results.data;
-    res.json({ data });
+
+    if (error) throw Error(error.message);
+    res.status(200).json({ data });
   } catch (e) {
     res.status(500).send({ e });
   }

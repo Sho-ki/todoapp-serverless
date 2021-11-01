@@ -1,8 +1,8 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const supabasejs = require("@supabase/supabase-js");
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const supabasejs = require('@supabase/supabase-js');
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
@@ -32,27 +32,26 @@ export default async function orderTodos(req, res) {
 
   try {
     await supabase
-      .from("todo_app")
+      .from('todo_app')
       .update({ index_number: currElIndexNumber })
       .match({ id });
     if (
       Math.abs(currElIndexNumber - prevElIndexNumber) <= 1 ||
       Math.abs(currElIndexNumber - nextElIndexNumber) <= 1
     ) {
-      // CREATE VIEW public.todo_row_number AS
-      // SELECT *, ROW_NUMBER() OVER (ORDER BY index_number) as orderedData FROM todo_app;
-      // return the table with a row number to each row
-      const datas = await supabase.from("todo_row_number");
+      const { data } = await supabase.from('todo_row_number');
+
       await Promise.all(
-        datas.data.map(async (element) => {
+        data.map(async (element) => {
           await supabase
-            .from("todo_app")
+            .from('todo_app')
             .update({ index_number: element.ordereddata * 1024 })
             .match({ id: element.id });
         })
       );
     }
-    res.send("/");
+
+    res.status(200).json({ message: 'OK' });
   } catch (e) {
     res.status(500).send({ e });
   }

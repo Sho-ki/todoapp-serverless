@@ -1,18 +1,23 @@
-import { useState, useContext } from "react";
-import { useEffectOnce } from "react-use";
-import axios from "axios";
-import { arrayMove } from "@dnd-kit/sortable";
+import { useState, useContext, useMemo } from 'react';
+import { useEffectOnce } from 'react-use';
+import axios from 'axios';
+import { arrayMove } from '@dnd-kit/sortable';
 
 function useTask(editTask, editId) {
   const [tasks, setTasks] = useState();
 
-  const [currentInput, setCurrentInput] = useState("");
+  const [currentInput, setCurrentInput] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editCurrentInput, setEditCurrentInput] = useState(editTask);
+  const [isEditValid, setIsEditValid] = useState(true);
+  const [isEditLoading, setIsEditLoading] = useState(false);
+  const [idxNumDisplayMode, setIdxNumDisplayMode] = useState(true);
 
-  useEffectOnce(() => {
-    axios
-      .get("/api/list-todos")
+  useEffectOnce(async () => {
+    await axios
+      .get('/api/list-todos')
       .then((res) => {
         setTasks(res.data.data);
         setIsLoading(false);
@@ -24,7 +29,7 @@ function useTask(editTask, editId) {
 
   const addTaskHandler = async (task) => {
     await axios
-      .post("/api/add-todos", {
+      .post('/api/add-todos', {
         todo: task,
       })
       .catch((e) => {
@@ -32,7 +37,7 @@ function useTask(editTask, editId) {
       });
 
     await axios
-      .get("/api/list-todos")
+      .get('/api/list-todos')
       .then((res) => {
         setTasks(res.data.data);
       })
@@ -43,7 +48,7 @@ function useTask(editTask, editId) {
 
   const editTaskHandler = async (id, currentInput) => {
     await axios
-      .post("/api/edit-todos/" + id, {
+      .post('/api/edit-todos/' + id, {
         newValue: currentInput,
       })
       .catch((e) => {
@@ -52,7 +57,7 @@ function useTask(editTask, editId) {
   };
 
   const deleteTaskHandler = async (id) => {
-    await axios.post("/api/delete-todos/" + id);
+    await axios.post('/api/delete-todos/' + id);
 
     setTasks(tasks.filter((todo) => todo.id !== id));
   };
@@ -78,7 +83,7 @@ function useTask(editTask, editId) {
     if (movedArray[newIdx - 1] !== undefined) {
       const prevId = movedArray[newIdx - 1].id;
       await axios
-        .get("/api/read-todos/" + prevId)
+        .get('/api/read-todos/' + prevId)
         .then((data) => {
           prevElIndexNumber = data.data.data[0].index_number;
           return;
@@ -90,7 +95,7 @@ function useTask(editTask, editId) {
     if (movedArray[newIdx + 1] !== undefined) {
       const nextId = movedArray[newIdx + 1].id;
       await axios
-        .get("/api/read-todos/" + nextId)
+        .get('/api/read-todos/' + nextId)
         .then((data) => {
           nextElIndexNumber = data.data.data[0].index_number;
           return;
@@ -99,17 +104,24 @@ function useTask(editTask, editId) {
           console.log(e);
         });
     }
-    const orderChange = async () => {
-      await axios
-        .post("/api/order-todos/" + id, {
-          prevElIndexNumber,
-          nextElIndexNumber,
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    };
-    orderChange();
+
+    await axios
+      .post('/api/order-todos/' + id, {
+        prevElIndexNumber,
+        nextElIndexNumber,
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    await axios
+      .get('/api/list-todos')
+      .then((res) => {
+        setTasks(res.data.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   const inputValueHandler = (e) => {
@@ -124,14 +136,9 @@ function useTask(editTask, editId) {
   const submit = () => {
     addTaskHandler(currentInput);
     setIsLoading(false);
-    setCurrentInput("");
+    setCurrentInput('');
     setIsValid(false);
   };
-  //
-  const [isEditing, setIsEditing] = useState(false);
-  const [editCurrentInput, setEditCurrentInput] = useState(editTask);
-  const [isEditValid, setIsEditValid] = useState(true);
-  const [isEditLoading, setIsEditLoading] = useState(false);
 
   const startEditMode = () => {
     setIsEditing(true);
@@ -158,6 +165,12 @@ function useTask(editTask, editId) {
     setEditCurrentInput(e.target.value);
   };
 
+  const onIdxNumDisplayHandler = () => {
+    setIdxNumDisplayMode(() => {
+      return idxNumDisplayMode ? false : true;
+    });
+  };
+
   return {
     tasks,
     addTaskHandler,
@@ -169,7 +182,6 @@ function useTask(editTask, editId) {
     isValid,
     isLoading,
     submit,
-    //
     editCurrentInput,
     startEditMode,
     endEditMode,
@@ -177,6 +189,8 @@ function useTask(editTask, editId) {
     isEditing,
     isEditValid,
     isEditLoading,
+    idxNumDisplayMode,
+    onIdxNumDisplayHandler,
   };
 }
 

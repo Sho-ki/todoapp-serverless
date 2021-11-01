@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
-require("dotenv").config();
-const supabasejs = require("@supabase/supabase-js");
-const cors = require("cors");
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const supabasejs = require('@supabase/supabase-js');
+const cors = require('cors');
 
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
@@ -22,9 +22,10 @@ export default async function editTodos(req, res) {
   const id = req.query.id;
 
   try {
-    await supabase.from("todo_app").delete().match({ id });
+    const { error } = await supabase.from('todo_app').delete().match({ id });
 
-    res.send("/");
+    if (error) throw Error(error.message);
+    res.status(200).send({ message: 'Successfuly Deleted' });
   } catch (e) {
     res.status(500).send({ e });
   }
