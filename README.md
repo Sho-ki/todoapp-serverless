@@ -1,5 +1,8 @@
 
-# Recruit-Test System Backend
+# Todo App
+
+## Article
+https://dev.to/shoki/how-to-update-the-database-after-a-drag-and-drop-operation-27dc
 
 ## Description
 This is a todo list with a function of drag and drop.
@@ -30,3 +33,6 @@ npm run dev
 // or
 npm run build && start
 ```
+
+## Only Using Node.js
+https://github.com/Sho-ki/drag-and-drop-todo
